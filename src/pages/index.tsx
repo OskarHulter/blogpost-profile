@@ -1,21 +1,52 @@
 import Head from "next/head";
 import type { InferGetServerSidePropsType, GetServerSideProps } from 'next'
 import type { Comments } from 'src/server/schema'
-import { getComments } from 'src/server/helpers'
+import { initialComments } from 'src/server/helpers'
 import Layout from 'src/components/layout'
 import AbTestRunner from 'src/components/ab-test-runner'
+import { preload, SWRConfig } from 'swr'
+import { fetchComments } from 'src/server/handlers'
+
+type PageProps = {
+  comments: Comments;
+  fallback: {
+    '/api/comments': Comments;
+  }
+  searchParams?: Promise<{
+    query?: string
+    page?: string
+  }>
+}
 
 export const getServerSideProps = (async () => {
-  const comments = await getComments();
+  const comments = await fetchComments();
 
-  return { props: { comments } }
-}) satisfies GetServerSideProps<{ comments: Comments }>
+  return {
+    props: {
+      comments,
+      fallback: {
+        '/api/comments': initialComments,
+      }
+    }
+  }
+}) satisfies GetServerSideProps<PageProps>
+
+preload('/api/comments', () => fetchComments)
  
-export default function Home({ comments }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default async function Home(props: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  const { comments, fallback } = props;
+    
+    const params = props.searchParams ? await props?.searchParams.catch(() => ({})) : {};
+    const query = params?.query || '';
+    const currentPage = Number(params?.page) || 1;
+ 
+  const totalPages = 20;
   
   if (!comments) return null;
 
   return (
+    <SWRConfig value={{ fallback }}>
+
     <>
       <Head>
         <title>Create T3 App</title>
@@ -23,8 +54,9 @@ export default function Home({ comments }: InferGetServerSidePropsType<typeof ge
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Layout>
-          <AbTestRunner comments={comments} />
+          <AbTestRunner />
       </Layout>
     </>
+    </SWRConfig>
   );
 }

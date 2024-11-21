@@ -4,25 +4,35 @@ import type { Comments } from 'src/server/schema'
 import { initialComments } from 'src/server/helpers'
 import Layout from 'src/components/layout'
 import AbTestRunner from 'src/components/ab-test-runner'
-import { preload, SWRConfig } from 'swr'
-import { fetchComments } from 'src/server/handlers'
+// import { SWRConfig } from 'swr'
+// import { fetchComments } from 'src/server/handlers'
 
-type PageProps = {
+export const defaultSearchParams = {
+  query: 'test',
+  page: '1'
+}
+
+export type PageProps = {
   comments: Comments;
   fallback: {
     '/api/comments': Comments;
   }
-  searchParams?: Promise<{
+  searchParams?: {
     query?: string
     page?: string
-  }>
+  }
 }
 
 export const getServerSideProps = (async () => {
-  const comments = await fetchComments();
+  const comments = initialComments;
+
+  const currentSearchParams = {
+    ...defaultSearchParams,
+  }
 
   return {
     props: {
+      searchParams: currentSearchParams,
       comments,
       fallback: {
         '/api/comments': initialComments,
@@ -31,22 +41,31 @@ export const getServerSideProps = (async () => {
   }
 }) satisfies GetServerSideProps<PageProps>
 
-preload('/api/comments', () => fetchComments)
+// preload('/api/comments', () => fetchComments)
  
 export default async function Home(props: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const { comments, fallback } = props;
-    
-    const params = props.searchParams ? await props?.searchParams.catch(() => ({})) : {};
-    const query = params?.query || '';
+  const { fallback, searchParams } = props;
+  
+    const params = searchParams ? searchParams : defaultSearchParams;
+    const query = params?.query ?? '';
+
+    console.log("🚀 ~ file: index.tsx:52 ~ Home ~ query:", query)
+
     const currentPage = Number(params?.page) || 1;
+
+    console.log("🚀 ~ file: index.tsx:56 ~ Home ~ currentPage:", currentPage)
+
  
   const totalPages = 20;
+
+  console.log("🚀 ~ file: index.tsx:61 ~ Home ~ totalPages:", totalPages)
+
   
   if (!comments) return null;
 
+  // <SWRConfig value={{ fallback }}>
+  console.dir(fallback)
   return (
-    <SWRConfig value={{ fallback }}>
-
     <>
       <Head>
         <title>Create T3 App</title>
@@ -57,6 +76,5 @@ export default async function Home(props: InferGetServerSidePropsType<typeof get
           <AbTestRunner />
       </Layout>
     </>
-    </SWRConfig>
   );
 }

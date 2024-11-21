@@ -1,10 +1,11 @@
 import Link from "next/link";
 import styles from "./index.module.css";
-import type { Comments } from 'src/server/schema'
-import { fetchComments } from 'src/server/handlers'
-import useSWR from 'swr'
+// import type { Comments } from 'src/server/schema'
+// import { fetchComments } from 'src/server/handlers'
+// import useSWR from 'swr'
 import { useState } from 'react'
 import { usePathname, useSearchParams } from 'next/navigation'
+import { initialComments } from 'src/server/helpers'
 
 export function CommentList() {
   const pathname = usePathname();
@@ -21,13 +22,11 @@ export function CommentList() {
 
 
   const [pageIndex, setPageIndex] = useState(currentPage);
-  const { data, error, isLoading } = useSWR<Comments, Error>(`/api/comments?page=${pageIndex}`, fetchComments)
+  // const { data, error, isLoading } = useSWR<Comments, Error>(`/api/comments?page=${pageIndex}`, fetchComments)
 
-  console.log("🚀 ~ file: comment-list.tsx:10 ~ CommentList ~ data:", data)
-
-  
-  if (isLoading) return <div>Loading...</div>
-  if (error) return <div>Failed to load comments</div>
+  const data = initialComments;
+  // if (isLoading) return <div>Loading...</div>
+  // if (error) return <div>Failed to load comments</div>
   if (!data) return null;
 
   return (

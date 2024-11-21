@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/prefer-for-of */
 import { ITERATION_TOTAL } from 'src/server/constants'
-import { api } from 'src/server/handlers'
+import { api, fetchComments } from 'src/server/handlers'
 import type { Comments, BlogPostComment } from 'src/server/schema'
 
 
@@ -18,9 +18,15 @@ export const defaultComment: BlogPostComment = {
   ownerId: "y"
 }
 
-export function getInitialComments() {
+export function getInitialComments(): Array<BlogPostComment> {
   let total = 0;
-  const comments = [];
+  const comments = [
+    defaultComment,
+    defaultComment,
+    defaultComment,
+    defaultComment,
+    defaultComment,
+  ];
 
   const start = performance.now()
   
@@ -48,9 +54,9 @@ export function getInitialComments() {
 export const initialComments = getInitialComments();
 
 export async function getComments() {
-  return await api<Comments>('comments');
+  return await fetchComments()
 }
 
 export async function getAsyncComments() {
-  return await new Promise(() => initialComments);
+  return await new Promise((): Comments => initialComments);
 }

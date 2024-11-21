@@ -3,7 +3,6 @@ import { type Comments } from 'src/server/schema'
 
 export async function api<T>(path: string): Promise<T> {
   const response = await fetch(`${BASE_URL}/api/${path}`);
-
   if (!response.ok) {
     throw new Error(response.statusText);
   }
@@ -21,8 +20,14 @@ export async function api<T>(path: string): Promise<T> {
 //   console.log(config.version); 
 // }
 
-// export const fetcher = (...args: []) => fetch('').then(res => res.json())
+export const fetcher = (path: string) => fetch(path).then(res => res.json())
+export const commentFetcher = () => fetch('api/comments').then(res => res.json())
 
-export function fetchComments() {
-  return api<Comments>('comments');
+export async function fetchComments() {
+  const res = await api<Comments>('comments');
+  return res
+}
+export async function getComments() {
+  const res = await api<Comments>('comments');
+  return res
 }

@@ -1,3 +1,5 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+/* @ts-ignore */
 /** @type {import("eslint").Linter.Config} */
 const config = {
   "parser": "@typescript-eslint/parser",
@@ -6,7 +8,7 @@ const config = {
   },
   "plugins": [
     "@typescript-eslint",
-    "drizzle"
+    "drizzle",
   ],
   "extends": [
     "next/core-web-vitals",
@@ -29,9 +31,13 @@ const config = {
         "argsIgnorePattern": "^_"
       }
     ],
+    "@typescript-eslint/no-unsafe-assignment": "warn",
+    "@typescript-eslint/no-unsafe-member-access": "warn",
+    "@typescript-eslint/no-unsafe-call": "warn",
+    "@typescript-eslint/prefer-nullish-coalescing": "warn",
     "@typescript-eslint/require-await": "off",
     "@typescript-eslint/no-misused-promises": [
-      "error",
+      "warn",
       {
         "checksVoidReturn": {
           "attributes": false

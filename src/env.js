@@ -11,6 +11,9 @@ export const env = createEnv({
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
+    HYPERTUNE_FRAMEWORK: z.enum(['nextPages', 'nextApp']).default('nextPages'),
+    HYPERTUNE_OUTPUT_DIRECTORY_PATH: z.enum(['generated']).default('generated'),
+    HYPERTUNE_INCLUDE_INIT_DATA: z.enum(['true', 'false']).default('false'),
   },
 
   /**
@@ -19,6 +22,7 @@ export const env = createEnv({
    * `NEXT_PUBLIC_`.
    */
   client: {
+    NEXT_PUBLIC_HYPERTUNE_TOKEN: z.string(),
     // NEXT_PUBLIC_CLIENTVAR: z.string(),
   },
 
@@ -29,6 +33,10 @@ export const env = createEnv({
   runtimeEnv: {
     DATABASE_URL: process.env.DATABASE_URL,
     NODE_ENV: process.env.NODE_ENV,
+    HYPERTUNE_FRAMEWORK: process.env.HYPERTUNE_FRAMEWORK,
+    HYPERTUNE_OUTPUT_DIRECTORY_PATH: process.env.HYPERTUNE_OUTPUT_DIRECTORY_PATH,
+    NEXT_PUBLIC_HYPERTUNE_TOKEN: process.env.NEXT_PUBLIC_HYPERTUNE_TOKEN,
+    HYPERTUNE_INCLUDE_INIT_DATA: process.env.HYPERTUNE_INCLUDE_INIT_DATA,
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   },
   /**

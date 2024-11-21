@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { getInitialComments } from 'src/server/helpers'
+import { initialComments } from 'src/server/helpers'
 import type { Comments } from 'src/server/schema'
  
 export default async function handler(
@@ -7,7 +7,7 @@ export default async function handler(
   res: NextApiResponse<Comments>
 ) {
 
-  const comments = getInitialComments()
+  const comments = initialComments;
 
   if (!comments) {
     res.status(404).json([]);
@@ -27,6 +27,6 @@ export default async function handler(
         .status(200)
         .json(comments);
     default:
-      res.status(500).json([]);
+      res.status(500).json(comments);
   }
 }

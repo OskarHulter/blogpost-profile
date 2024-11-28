@@ -9,4 +9,4 @@ export type BlogPostComment = {
   ownerId: string
 }
 
-export type Comments = Array<BlogPostComment | null>
+export type Comments = Array<BlogPostComment> | null

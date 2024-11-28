@@ -36,11 +36,11 @@ preload('/api/comments', () => fetchComments)
 export default async function Home(props: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { comments, fallback } = props;
     
-    const params = props.searchParams ? await props?.searchParams.catch(() => ({})) : {};
-    const query = params?.query || '';
-    const currentPage = Number(params?.page) || 1;
+    // const params = props.searchParams ? await props?.searchParams.catch(() => ({})) : {};
+    // const query = params?.query || '';
+    // const currentPage = Number(params?.page) || 1;
  
-  const totalPages = 20;
+  // const totalPages = 20;
   
   if (!comments) return null;
 
